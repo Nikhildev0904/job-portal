@@ -1,0 +1,34 @@
+package com.nikhildev.projects.job_portal.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class JobResponse {
+
+    private UUID id;
+    private String title;
+    private String companyName;
+    private String location;
+    private String jobType;
+    private BigDecimal minSalary;
+    private BigDecimal maxSalary;
+    private String description;
+    private String requirements;
+    private String responsibilities;
+    private LocalDate applicationDeadline;
+    private Boolean isRemote;
+    private Integer experienceYears;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
+}
