@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import JobCard from './JobCard';
 import JobService from '../../services/job.service';
 import Button from '../ui/Button';
@@ -10,11 +10,7 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
   const [cursor, setCursor] = useState(null);
   const [hasMore, setHasMore] = useState(true);
 
-  useEffect(() => {
-    fetchJobs();
-  }, [filters, sortBy, sortDirection]);
-
-  const fetchJobs = async (reset = true) => {
+  const fetchJobs = useCallback(async (reset = true) => {
     try {
       setLoading(true);
       const currentCursor = reset ? null : cursor;
@@ -29,7 +25,7 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
 
       const { data, nextCursor, hasMore } = response.data;
 
-      setJobs(reset ? data : [...jobs, ...data]);
+      setJobs(prevJobs => reset ? data : [...prevJobs, ...data]);
       setCursor(nextCursor);
       setHasMore(hasMore);
       setError(null);
@@ -39,7 +35,11 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters, sortBy, sortDirection, cursor]);
+
+  useEffect(() => {
+    fetchJobs();
+  }, [fetchJobs]);
 
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this job?')) {
@@ -65,13 +65,15 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
         </div>
       ) : (
         <>
-          {jobs.map(job => (
-            <JobCard
-              key={job.id}
-              job={job}
-              onDelete={handleDelete}
-            />
-          ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {jobs.map(job => (
+              <JobCard
+                key={job.id}
+                job={job}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
 
           {hasMore && (
             <div className="text-center my-4">

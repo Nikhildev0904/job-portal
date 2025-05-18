@@ -18,9 +18,16 @@ module.exports = {
           900: '#4c1d95',
         },
       },
+      borderRadius: {
+        'xl': '1rem',
+      },
+      boxShadow: {
+        DEFAULT: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+      },
     },
   },
   plugins: [
     require('@tailwindcss/forms'),
+    require('@tailwindcss/line-clamp'),
   ],
 }

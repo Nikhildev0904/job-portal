@@ -4,15 +4,15 @@ import logo from '../../assets/images/logo.png';
 
 const Header = () => {
   return (
-    <header className="bg-white shadow-sm">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center space-x-8">
+    <div className="bg-white shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center py-4">
+          <div className="flex items-center space-x-10">
             <Link to="/" className="flex items-center">
-              <img src={logo} alt="Job Portal Logo" className="h-8 w-8" />
+              <img src={logo} alt="Job Portal Logo" className="h-10 w-10" />
             </Link>
 
-            <nav className="hidden md:flex space-x-6">
+            <nav className="hidden md:flex space-x-8">
               <Link to="/" className="text-gray-700 hover:text-purple-600">
                 Home
               </Link>
@@ -34,14 +34,14 @@ const Header = () => {
           <div>
             <Link
               to="/jobs/create"
-              className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md text-sm font-medium"
+              className="bg-purple-600 hover:bg-purple-700 text-white px-5 py-2 rounded-md text-sm font-medium"
             >
               Create Jobs
             </Link>
           </div>
         </div>
       </div>
-    </header>
+    </div>
   );
 };
 
