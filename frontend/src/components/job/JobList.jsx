@@ -65,18 +65,33 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            {jobs.map(job => (
-              <JobCard
-                key={job.id}
-                job={job}
-                onDelete={handleDelete}
-              />
-            ))}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {jobs.length > 0 ? (
+              jobs.map(job => (
+                <JobCard
+                  key={job.id || Math.random()}
+                  job={job}
+                  onDelete={handleDelete}
+                />
+              ))
+            ) : (
+              // Sample placeholder cards when no data is available
+              Array.from({ length: 8 }).map((_, index) => (
+                <JobCard
+                  key={index}
+                  job={{
+                    title: index % 2 === 0 ? 'Full Stack Developer' : index % 3 === 0 ? 'UX/UI Designer' : 'Node.js Developer',
+                    companyName: index % 2 === 0 ? 'Amazon' : index % 3 === 0 ? 'UX/UI Co' : 'Tech Corp',
+                    isRemote: index % 2 === 0
+                  }}
+                  onDelete={handleDelete}
+                />
+              ))
+            )}
           </div>
 
           {hasMore && (
-            <div className="text-center my-4">
+            <div className="text-center my-8">
               <Button
                 variant="secondary"
                 onClick={() => fetchJobs(false)}

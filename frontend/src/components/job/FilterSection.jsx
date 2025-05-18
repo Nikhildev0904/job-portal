@@ -1,8 +1,4 @@
 import React, { useState } from 'react';
-import Input from '../ui/Input';
-import Select from '../ui/Select';
-import RangeSlider from '../ui/RangeSlider';
-import Button from '../ui/Button';
 
 const jobTypeOptions = [
   { value: '', label: 'All Types' },
@@ -25,8 +21,15 @@ const FilterSection = ({ onFilterChange }) => {
     setFilters(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSalaryChange = (value) => {
-    setFilters(prev => ({ ...prev, salary: value }));
+  const handleSalaryChange = (e, type) => {
+    const value = parseInt(e.target.value);
+    setFilters(prev => ({
+      ...prev,
+      salary: {
+        ...prev.salary,
+        [type]: value
+      }
+    }));
   };
 
   const applyFilters = () => {
@@ -51,26 +54,24 @@ const FilterSection = ({ onFilterChange }) => {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow p-6 mb-6">
+    <div className="bg-white rounded-lg shadow p-6 mb-8">
       <h2 className="text-xl font-bold mb-6">Find Jobs</h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-        <div>
-          <div className="relative">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </span>
-            <input
-              type="text"
-              name="title"
-              placeholder="Search By Job Title, Role"
-              value={filters.title}
-              onChange={handleInputChange}
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
-            />
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6">
+        <div className="relative">
+          <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </span>
+          <input
+            type="text"
+            name="title"
+            placeholder="Search By Job Title, Role"
+            value={filters.title}
+            onChange={handleInputChange}
+            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
+          />
         </div>
 
         <div className="relative">
@@ -88,6 +89,11 @@ const FilterSection = ({ onFilterChange }) => {
             onChange={handleInputChange}
             className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
           />
+          <span className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 pointer-events-none">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
         </div>
 
         <div className="relative">
@@ -100,7 +106,7 @@ const FilterSection = ({ onFilterChange }) => {
             name="jobType"
             value={filters.jobType}
             onChange={handleInputChange}
-            className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 appearance-none"
+            className="w-full pl-10 pr-8 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 appearance-none bg-white"
           >
             {jobTypeOptions.map(option => (
               <option key={option.value} value={option.value}>
@@ -118,29 +124,61 @@ const FilterSection = ({ onFilterChange }) => {
 
       <div className="mb-6">
         <div className="flex justify-between items-center mb-2">
-          <p className="text-sm font-medium">Salary Per Month</p>
+          <p className="text-sm font-medium text-gray-700">Salary Per Month</p>
           <p className="text-sm">₹{filters.salary.min} - ₹{filters.salary.max}</p>
         </div>
 
-        <RangeSlider
-          min={0}
-          max={200000}
-          step={5000}
-          value={filters.salary}
-          onChange={handleSalaryChange}
-        />
+        <div className="relative h-1 bg-gray-200 rounded-full mt-4 mb-4">
+          <div
+            className="absolute h-1 bg-purple-500 rounded-full"
+            style={{
+              left: `${(filters.salary.min / 200000) * 100}%`,
+              width: `${((filters.salary.max - filters.salary.min) / 200000) * 100}%`,
+            }}
+          ></div>
+
+          <input
+            type="range"
+            min={0}
+            max={200000}
+            step={5000}
+            value={filters.salary.min}
+            onChange={(e) => handleSalaryChange(e, 'min')}
+            className="absolute w-full h-1 opacity-0 z-10 cursor-pointer"
+          />
+
+          <input
+            type="range"
+            min={0}
+            max={200000}
+            step={5000}
+            value={filters.salary.max}
+            onChange={(e) => handleSalaryChange(e, 'max')}
+            className="absolute w-full h-1 opacity-0 z-10 cursor-pointer"
+          />
+
+          <div
+            className="absolute w-5 h-5 bg-white border-2 border-purple-500 rounded-full -mt-2"
+            style={{ left: `calc(${(filters.salary.min / 200000) * 100}% - 10px)`, top: '0' }}
+          ></div>
+
+          <div
+            className="absolute w-5 h-5 bg-white border-2 border-purple-500 rounded-full -mt-2"
+            style={{ left: `calc(${(filters.salary.max / 200000) * 100}% - 10px)`, top: '0' }}
+          ></div>
+        </div>
       </div>
 
       <div className="flex justify-end space-x-3">
         <button
           onClick={resetFilters}
-          className="px-5 py-2 bg-gray-100 text-gray-800 rounded hover:bg-gray-200"
+          className="px-6 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded font-medium"
         >
           Reset
         </button>
         <button
           onClick={applyFilters}
-          className="px-5 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+          className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded font-medium"
         >
           Apply Filters
         </button>
