@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 const JobCard = ({ job, onDelete, onEdit }) => {
+  const [logoError, setLogoError] = useState(false);
+
   // Format the time from createdAt
   const getTimeAgo = (createdAt) => {
     if (!createdAt) return '24h Ago';
@@ -20,40 +22,162 @@ const JobCard = ({ job, onDelete, onEdit }) => {
     }
   };
 
-  // Get company logo
-  const getCompanyLogo = () => {
-    if (!job.companyName) return null;
+  // Helper function to generate a likely domain from company name
+  const getDomainFromCompanyName = (name) => {
+    if (!name) return "example.com";
 
-    const name = job.companyName.toLowerCase();
-    if (name.includes('amazon')) {
-      return (
-        <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center bg-white rounded-xl overflow-hidden p-2">
-          <div className="w-full h-full bg-black rounded-full flex items-center justify-center relative">
-            <span className="text-white text-2xl md:text-3xl font-bold mt-1">a</span>
-            <div className="absolute w-8 md:w-10 h-1.5 bg-yellow-500 mt-10 md:mt-12 rounded-full"></div>
-          </div>
-        </div>
-      );
-    } else if (name.includes('tesla') || name.includes('node')) {
-      return (
-        <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center bg-white rounded-xl overflow-hidden p-4">
-          <svg viewBox="0 0 100 13" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 0c.3 1.1 1.3 2.3 2.6 2.6h4.1l.2 2.8h7.1l.2-2.8h4.1c1.4-.3 2.4-1.5 2.6-2.6v-.1H0v.1zM77.8 13c1.3-.5 2-1.5 2.2-2.6H68.7c.2 1.2.9 2.1 2.2 2.6h6.9zm-36.2-3.7h62.7v-.1c-.3-1.1-1.4-2.3-2.6-2.6h-36.2V0c-.3 1.1-1.3 2.3-2.6 2.6h-4.6v6.1z" fill="currentColor"/>
-          </svg>
-        </div>
-      );
-    } else {
-      // For any other company, just use first letter
-      const letter = job.companyName.charAt(0).toUpperCase();
-      return (
-        <div className="w-24 h-24 sm:w-28 sm:h-28 md:w-32 md:h-32 flex items-center justify-center bg-white rounded-xl overflow-hidden p-3">
-          <div className="w-full h-full bg-gray-100 rounded-xl flex items-center justify-center">
-            <span className="text-gray-700 text-3xl md:text-4xl font-bold">{letter}</span>
-          </div>
-        </div>
-      );
+    // Handle special cases first
+    const specialCases = {
+      'reliance industries': 'ril.com',
+      'tata consultancy services': 'tcs.com',
+      'hdfc bank': 'hdfcbank.com',
+      'state bank of india': 'sbi.co.in',
+      'bharti airtel': 'airtel.in',
+      'infosys technologies': 'infosys.com',
+      'larsen & toubro': 'larsentoubro.com',
+      'mahindra & mahindra': 'mahindra.com',
+      'itc limited': 'itcportal.com',
+      'oil and natural gas corporation': 'ongcindia.com',
+      'hindustan unilever': 'hul.co.in',
+      'icici bank': 'icicibank.com',
+      'kotak mahindra bank': 'kotak.com',
+      'bharat petroleum': 'bharatpetroleum.com',
+      'hindustan petroleum': 'hindustanpetroleum.com',
+      'tata motors': 'tatamotors.com',
+      'tata steel': 'tatasteel.com',
+      'axis bank': 'axisbank.com',
+      'wipro limited': 'wipro.com',
+      'indian oil': 'iocl.com',
+      'sun pharmaceuticals': 'sunpharma.com',
+      'tech mahindra': 'techmahindra.com',
+      'bajaj auto': 'bajajauto.com',
+      'bajaj finance': 'bajajfinserv.in',
+      'ultratech cement': 'ultratechcement.com'
+    };
+
+    const lowerName = name.toLowerCase();
+
+    // Check if it's a special case
+    for (const [key, domain] of Object.entries(specialCases)) {
+      if (lowerName.includes(key)) {
+        return domain;
+      }
     }
+
+    // Try multiple domain formats
+    const domains = [];
+
+    // Remove common legal entity suffixes
+    let processedName = name.replace(/\s+(Inc\.?|LLC|Ltd\.?|GmbH|Corp\.?|Corporation|Limited)$/i, "");
+
+    // Try with no spaces (reliance.com)
+    let noSpaces = processedName.replace(/\s+/g, "").replace(/[^\w\s]/gi, "").toLowerCase();
+    domains.push(`${noSpaces}.com`);
+
+    // Try with .in domain (reliance.in)
+    domains.push(`${noSpaces}.in`);
+
+    // Try with hyphens (reliance-industries.com)
+    let withHyphens = processedName.replace(/\s+/g, "-").replace(/[^\w\s-]/gi, "").toLowerCase();
+    domains.push(`${withHyphens}.com`);
+
+    // Try with first word only (reliance.com) if there are multiple words
+    if (processedName.includes(' ')) {
+      let firstWord = processedName.split(' ')[0].toLowerCase();
+      domains.push(`${firstWord}.com`);
+    }
+
+    // Return the first option as default, but we'll try them all
+    return domains[0];
   };
+
+  // Get possible domains for a company
+  const getPossibleDomains = (companyName) => {
+    if (!companyName) return [];
+
+    const name = companyName.trim();
+    const primaryDomain = getDomainFromCompanyName(name);
+
+    // Generate alternative domains based on company name
+    const domains = [primaryDomain];
+
+    // If it's a multi-word name
+    if (name.includes(' ')) {
+      // Try domain with no spaces
+      const noSpaces = name.replace(/\s+/g, '').toLowerCase();
+      domains.push(`${noSpaces}.com`);
+
+      // Try domain with hyphens
+      const withHyphens = name.replace(/\s+/g, '-').toLowerCase();
+      domains.push(`${withHyphens}.com`);
+
+      // Try first word only
+      const firstWord = name.split(' ')[0].toLowerCase();
+      domains.push(`${firstWord}.com`);
+
+      // Try first letter of each word
+      const acronym = name.split(' ').map(word => word[0]).join('').toLowerCase();
+      if (acronym.length > 1) {
+        domains.push(`${acronym}.com`);
+      }
+    }
+
+    // Add .in domain for Indian companies
+    const nameWithoutSpaces = name.replace(/\s+/g, '').toLowerCase();
+    domains.push(`${nameWithoutSpaces}.in`);
+
+    // Filter out duplicates
+    return [...new Set(domains)];
+  };
+
+ // Get company logo
+ const getCompanyLogo = () => {
+   if (!job.companyName) return null;
+
+   if (logoError) {
+     // Fallback to initial letter
+     const letter = job.companyName.charAt(0).toUpperCase();
+     return (
+       <div className="w-20 h-20 flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100">
+         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+           <span className="text-gray-700 text-3xl font-bold">{letter}</span>
+         </div>
+       </div>
+     );
+   }
+
+   // Get primary domain for logo
+   const companyDomain = getDomainFromCompanyName(job.companyName);
+
+   return (
+     <div className="w-20 h-20 flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100">
+       <div className="w-16 h-16 rounded-full overflow-hidden flex items-center justify-center bg-white">
+         <img
+           src={`https://logo.clearbit.com/${companyDomain}`}
+           alt={`${job.companyName} logo`}
+           className="w-full h-full object-contain"
+           onError={(e) => {
+             // Try fallback domains before giving up
+             const possibleDomains = getPossibleDomains(job.companyName);
+             const currentSrc = e.target.src;
+             const currentDomain = currentSrc.split('/').pop();
+
+             // Find the next domain to try
+             const nextDomainIndex = possibleDomains.findIndex(domain => domain === currentDomain) + 1;
+
+             if (nextDomainIndex > 0 && nextDomainIndex < possibleDomains.length) {
+               // Try next domain
+               e.target.src = `https://logo.clearbit.com/${possibleDomains[nextDomainIndex]}`;
+             } else {
+               // We've tried all domains, show fallback
+               setLogoError(true);
+             }
+           }}
+         />
+       </div>
+     </div>
+   );
+ };
 
   // Format salary display
   const formatSalary = () => {
@@ -72,18 +196,25 @@ const JobCard = ({ job, onDelete, onEdit }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 md:p-5">
-      <div className="relative flex flex-col items-center">
-        <div className="absolute top-0 right-0">
+      <div className="flex flex-col">
+        {/* Top section with logo and timestamp */}
+        <div className="flex justify-between items-start mb-4">
+          {/* Company logo on the left */}
+          {getCompanyLogo()}
+
+          {/* Timestamp on the right */}
           <div className="bg-blue-100 text-blue-500 text-xs px-3 py-1 md:text-sm md:px-4 md:py-2 rounded-full">
             {getTimeAgo(job.createdAt)}
           </div>
         </div>
 
-        {getCompanyLogo()}
+        {/* Job title and company name - centered */}
+        <div className="text-center mb-4">
+          <h3 className="text-xl md:text-2xl font-bold mb-2 line-clamp-1">{job.title}</h3>
+          <p className="text-gray-600 mb-2 line-clamp-1">{job.companyName}</p>
+        </div>
 
-        <h3 className="text-xl md:text-2xl font-bold mt-4 mb-2 text-center line-clamp-1">{job.title}</h3>
-        <p className="text-gray-600 mb-2 text-center line-clamp-1">{job.companyName}</p>
-
+        {/* Job details */}
         <div className="flex flex-wrap justify-center gap-2 sm:gap-4 mb-3 text-gray-500 text-sm md:text-base">
           <div className="flex items-center">
             <svg className="w-4 h-4 md:w-5 md:h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">

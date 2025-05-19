@@ -77,15 +77,14 @@ public class JobService {
                                     criteriaBuilder.greaterThan(root.get("minSalary"), cursorJob.getMinSalary()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("minSalary"), cursorJob.getMinSalary()),
-                                            criteriaBuilder.greaterThan(root.get("id").as(String.class), cursorJob.getId().toString())
-                                    )
+                                            criteriaBuilder.greaterThan(root.get("id"), cursorJob.getId())                                    )
                             ));
                         } else {
                             predicates.add(criteriaBuilder.or(
                                     criteriaBuilder.lessThan(root.get("minSalary"), cursorJob.getMinSalary()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("minSalary"), cursorJob.getMinSalary()),
-                                            criteriaBuilder.lessThan(root.get("id").as(String.class), cursorJob.getId().toString())
+                                            criteriaBuilder.lessThan(root.get("id"), cursorJob.getId())
                                     )
                             ));
                         }
@@ -95,15 +94,14 @@ public class JobService {
                                     criteriaBuilder.greaterThan(root.get("experienceYears"), cursorJob.getExperienceYears()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("experienceYears"), cursorJob.getExperienceYears()),
-                                            criteriaBuilder.greaterThan(root.get("id").as(String.class), cursorJob.getId().toString())
-                                    )
+                                            criteriaBuilder.greaterThan(root.get("id"), cursorJob.getId())                                    )
                             ));
                         } else {
                             predicates.add(criteriaBuilder.or(
                                     criteriaBuilder.lessThan(root.get("experienceYears"), cursorJob.getExperienceYears()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("experienceYears"), cursorJob.getExperienceYears()),
-                                            criteriaBuilder.lessThan(root.get("id").as(String.class), cursorJob.getId().toString())
+                                            criteriaBuilder.lessThan(root.get("id"), cursorJob.getId())
                                     )
                             ));
                         }
@@ -114,7 +112,7 @@ public class JobService {
                                     criteriaBuilder.greaterThan(root.get("createdAt"), cursorJob.getCreatedAt()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("createdAt"), cursorJob.getCreatedAt()),
-                                            criteriaBuilder.greaterThan(root.get("id").as(String.class), cursorJob.getId().toString())
+                                            criteriaBuilder.greaterThan(root.get("id"), cursorJob.getId())
                                     )
                             ));
                         } else {
@@ -122,7 +120,7 @@ public class JobService {
                                     criteriaBuilder.lessThan(root.get("createdAt"), cursorJob.getCreatedAt()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("createdAt"), cursorJob.getCreatedAt()),
-                                            criteriaBuilder.lessThan(root.get("id").as(String.class), cursorJob.getId().toString())
+                                            criteriaBuilder.lessThan(root.get("id"), cursorJob.getId())
                                     )
                             ));
                         }

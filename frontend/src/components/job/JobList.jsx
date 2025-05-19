@@ -19,7 +19,7 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
       const response = await JobService.getAllJobs(
         filters,
         currentCursor,
-        10,
+        12,
         sortBy,
         sortDirection
       );
@@ -36,7 +36,34 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
     } finally {
       setLoading(false);
     }
-  }, [filters, sortBy, sortDirection, cursor]);
+  }, [filters, sortBy, sortDirection]);
+
+  const handleLoadMore = async () => {
+    if (loading || !hasMore) return;
+
+    try {
+      setLoading(true);
+
+      const response = await JobService.getAllJobs(
+        filters,
+        cursor,
+        12,
+        sortBy,
+        sortDirection
+      );
+
+      const { data, nextCursor, hasMore: moreJobs } = response.data;
+
+      setJobs(prevJobs => [...prevJobs, ...data]);
+      setCursor(nextCursor);
+      setHasMore(moreJobs);
+    } catch (err) {
+      setError('Failed to fetch more jobs. Please try again.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     fetchJobs();
@@ -85,7 +112,7 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
             <div className="text-center my-8">
               <button
                 className="px-6 py-2 bg-gray-100 text-gray-800 rounded hover:bg-gray-200"
-                onClick={() => fetchJobs(false)}
+                onClick={handleLoadMore}
                 disabled={loading}
               >
                 {loading ? 'Loading...' : 'Load More'}

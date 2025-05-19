@@ -34,7 +34,7 @@ public class JobController {
             @RequestParam(required = false) BigDecimal minSalary,
             @RequestParam(required = false) BigDecimal maxSalary,
             @RequestParam(required = false) String cursor,
-            @RequestParam(defaultValue = "10") int limit,
+            @RequestParam(defaultValue = "12") int limit,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
 
