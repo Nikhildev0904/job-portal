@@ -33,9 +33,16 @@ public class JobService {
             List<Predicate> predicates = new ArrayList<>();
 
             if (title != null && !title.isEmpty()) {
-                predicates.add(criteriaBuilder.like(
-                        criteriaBuilder.lower(root.get("title")),
-                        "%" + title.toLowerCase() + "%"));
+                predicates.add(
+                        criteriaBuilder.or(
+                                criteriaBuilder.like(
+                                        criteriaBuilder.lower(root.get("title")),
+                                        "%" + title.toLowerCase() + "%"),
+                                criteriaBuilder.like(
+                                        criteriaBuilder.lower(root.get("companyName")),
+                                        "%" + title.toLowerCase() + "%")
+                        )
+                );
             }
 
             if (location != null && !location.isEmpty()) {

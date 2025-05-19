@@ -33,18 +33,18 @@ const FilterSection = ({ onFilterChange }) => {
     <div className="max-w-7xl mx-auto bg-white rounded-lg shadow px-6 py-4 -mt-4 mb-4">
       <div className="flex items-center divide-x divide-gray-200">
 
-        {/* Job Title */}
+        {/* Job Title / Company Name */}
         <div className="flex-1 flex items-center px-4">
-          <div className="relative w-full">
-            <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-              </svg>
+                  <div className="relative w-full">
+                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                             <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                  </svg>
             </div>
             <input
               type="text"
               name="title"
-              placeholder="Search By Job Title, Role"
+              placeholder="Search By Job, Company "
               value={filters.title}
               onChange={handleInputChange}
               className="w-full pl-8 pr-2 py-2 border-0 focus:ring-0 text-gray-700"
@@ -52,7 +52,7 @@ const FilterSection = ({ onFilterChange }) => {
           </div>
         </div>
 
-        {/* Location */}
+        {/* Location - Changed to text input */}
         <div className="flex-1 flex items-center px-4">
           <div className="relative w-full">
             <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
@@ -61,25 +61,14 @@ const FilterSection = ({ onFilterChange }) => {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
               </svg>
             </div>
-            <select
+            <input
+              type="text"
               name="location"
+              placeholder="Preferred Location"
               value={filters.location}
               onChange={handleInputChange}
-              className="w-full pl-8 pr-6 py-2 border-0 focus:ring-0 text-gray-700 appearance-none"
-            >
-              <option value="">Preferred Location</option>
-              <option value="Bangalore">Bangalore</option>
-              <option value="Chennai">Chennai</option>
-              <option value="Hyderabad">Hyderabad</option>
-              <option value="Mumbai">Mumbai</option>
-              <option value="Delhi">Delhi</option>
-              <option value="Remote">Remote</option>
-            </select>
-            <div className="absolute inset-y-0 right-0 pr-2 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-              </svg>
-            </div>
+              className="w-full pl-8 pr-2 py-2 border-0 focus:ring-0 text-gray-700"
+            />
           </div>
         </div>
 

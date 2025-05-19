@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import MainLayout from '../components/layout/MainLayout';
 import JobService from '../services/job.service';
 
 const CreateJob = () => {
@@ -8,7 +9,7 @@ const CreateJob = () => {
   const [formData, setFormData] = useState({
     title: '',
     companyName: '',
-    location: 'Chennai',
+    location: 'No Selection',
     jobType: 'FullTime',
     minSalary: '50000',
     maxSalary: '180000',
@@ -57,9 +58,9 @@ const CreateJob = () => {
   };
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full flex items-center justify-center z-50">
-      <div className="relative bg-white rounded-lg shadow-xl max-w-4xl w-full p-8 mx-4">
-        <h2 className="text-2xl font-bold mb-6 text-center">Create Job Opening</h2>
+    <MainLayout>
+      <div className="max-w-4xl mx-auto bg-white rounded-lg shadow p-6">
+        <h1 className="text-2xl font-bold mb-6">Create Job Opening</h1>
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -303,7 +304,7 @@ const CreateJob = () => {
           </div>
         </form>
       </div>
-    </div>
+    </MainLayout>
   );
 };
 
