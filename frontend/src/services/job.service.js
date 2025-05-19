@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://job-portal-env.eba-kdasiabz.us-east-1.elasticbeanstalk.com';
+const API_URL = 'https://jobadminportal-b2ee96473d89.herokuapp.com';
 
 const api = axios.create({
   baseURL: API_URL,

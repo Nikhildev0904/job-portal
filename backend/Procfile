@@ -1,1 +1,1 @@
-web: java -jar build/libs/job-portal.jar
+web: java -jar target/job_portal-0.0.1-SNAPSHOT.jar
