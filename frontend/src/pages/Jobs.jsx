@@ -44,9 +44,9 @@ const Jobs = () => {
         <div className="flex justify-end mb-6">
           <div className="relative">
             <select
-              className="appearance-none pl-4 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 bg-white"
-              onChange={handleSortChange}
-              defaultValue="newest"
+               className="appearance-none pl-4 pr-10 py-2 rounded-md bg-white focus:outline-none focus:ring-0 border border-gray-300 bg-no-repeat"
+               onChange={handleSortChange}
+               defaultValue="newest"
             >
               <option value="newest">Newest First</option>
               <option value="oldest">Oldest First</option>

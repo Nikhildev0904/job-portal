@@ -9,10 +9,10 @@ const CreateJob = () => {
   const [formData, setFormData] = useState({
     title: '',
     companyName: '',
-    location: 'No Selection',
-    jobType: 'FullTime',
-    minSalary: '50000',
-    maxSalary: '180000',
+    location: '',
+    jobType: '',
+    minSalary: '',
+    maxSalary: '',
     description: '',
     requirements: '',
     responsibilities: '',
@@ -31,6 +31,12 @@ const CreateJob = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // Validate required fields
+    if (!formData.location || !formData.jobType || !formData.minSalary) {
+      alert('Please fill in all required fields marked with *');
+      return;
+    }
 
     // Clean up data before submitting
     const dataToSubmit = {
@@ -53,8 +59,7 @@ const CreateJob = () => {
   };
 
   const handleSaveDraft = () => {
-    localStorage.setItem('jobDraft', JSON.stringify(formData));
-    alert('Draft saved');
+    alert('Feature coming soon');
   };
 
   return (
@@ -106,6 +111,7 @@ const CreateJob = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 appearance-none pr-10"
                   required
                 >
+                  <option value="">Select Location</option>
                   <option value="Chennai">Chennai</option>
                   <option value="Bengaluru">Bengaluru</option>
                   <option value="Mumbai">Mumbai</option>
@@ -133,6 +139,7 @@ const CreateJob = () => {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500 appearance-none pr-10"
                   required
                 >
+                  <option value="">Select Job Type</option>
                   <option value="FullTime">Full Time</option>
                   <option value="PartTime">Part Time</option>
                   <option value="Contract">Contract</option>
@@ -161,6 +168,7 @@ const CreateJob = () => {
                   onChange={handleChange}
                   className="w-full pl-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
                   required
+                  placeholder="Enter minimum salary"
                 />
               </div>
             </div>
@@ -177,6 +185,7 @@ const CreateJob = () => {
                   value={formData.maxSalary}
                   onChange={handleChange}
                   className="w-full pl-8 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-purple-500"
+                  placeholder="Enter maximum salary"
                 />
               </div>
             </div>

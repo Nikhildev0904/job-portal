@@ -84,7 +84,7 @@ const FilterSection = ({ onFilterChange }) => {
               name="jobType"
               value={filters.jobType}
               onChange={handleInputChange}
-              className="w-full pl-8 pr-6 py-2 border-0 focus:ring-0 text-gray-700 appearance-none"
+              className="w-full pl-8 pr-8 py-2 border-0 focus:ring-0 text-gray-700 appearance-none bg-none"
             >
               <option value="">Job type</option>
               <option value="FullTime">Full Time</option>
