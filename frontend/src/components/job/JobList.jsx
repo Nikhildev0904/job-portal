@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import JobCard from './JobCard';
 import JobService from '../../services/job.service';
-import Button from '../ui/Button';
 
 const JobList = ({ filters, sortBy, sortDirection }) => {
+  const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -53,6 +54,10 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
     }
   };
 
+  const handleEdit = (id) => {
+    navigate(`/jobs/edit/${id}`);
+  };
+
   if (error) {
     return <div className="text-center text-red-500 my-4">{error}</div>;
   }
@@ -65,40 +70,26 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {jobs.length > 0 ? (
-              jobs.map(job => (
-                <JobCard
-                  key={job.id || Math.random()}
-                  job={job}
-                  onDelete={handleDelete}
-                />
-              ))
-            ) : (
-              // Sample placeholder cards when no data is available
-              Array.from({ length: 8 }).map((_, index) => (
-                <JobCard
-                  key={index}
-                  job={{
-                    title: index % 2 === 0 ? 'Full Stack Developer' : index % 3 === 0 ? 'UX/UI Designer' : 'Node.js Developer',
-                    companyName: index % 2 === 0 ? 'Amazon' : index % 3 === 0 ? 'UX/UI Co' : 'Tech Corp',
-                    isRemote: index % 2 === 0
-                  }}
-                  onDelete={handleDelete}
-                />
-              ))
-            )}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {jobs.map(job => (
+              <JobCard
+                key={job.id}
+                job={job}
+                onDelete={handleDelete}
+                onEdit={handleEdit}
+              />
+            ))}
           </div>
 
           {hasMore && (
             <div className="text-center my-8">
-              <Button
-                variant="secondary"
+              <button
+                className="px-6 py-2 bg-gray-100 text-gray-800 rounded hover:bg-gray-200"
                 onClick={() => fetchJobs(false)}
                 disabled={loading}
               >
                 {loading ? 'Loading...' : 'Load More'}
-              </Button>
+              </button>
             </div>
           )}
         </>

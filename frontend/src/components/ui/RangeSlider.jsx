@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 
 const RangeSlider = ({
-  min,
-  max,
-  step,
-  value = { min: 0, max: 100 },
+  min = 0,
+  max = 2000000,
+  step = 10000,
+  value = { min: 0, max: 1000000 },
   onChange,
 }) => {
   const [localValues, setLocalValues] = useState(value);
@@ -27,17 +27,19 @@ const RangeSlider = ({
     onChange(newValues);
   };
 
+  const calculatePosition = (val) => `${((val - min) / (max - min)) * 100}%`;
+
   return (
-    <div className="relative h-2">
+    <div className="relative h-6 mt-2">
       {/* Track */}
-      <div className="absolute inset-0 bg-gray-200 rounded"></div>
+      <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-300 rounded-full"></div>
 
       {/* Selected Range */}
       <div
-        className="absolute h-2 bg-purple-500 rounded"
+        className="absolute top-1/2 transform -translate-y-1/2 h-1 bg-[#780eca] rounded-full"
         style={{
-          left: `${(localValues.min / max) * 100}%`,
-          width: `${((localValues.max - localValues.min) / max) * 100}%`
+          left: calculatePosition(localValues.min),
+          width: `calc(${calculatePosition(localValues.max)} - ${calculatePosition(localValues.min)})`,
         }}
       ></div>
 
@@ -49,7 +51,7 @@ const RangeSlider = ({
         step={step}
         value={localValues.min}
         onChange={handleMinChange}
-        className="absolute w-full h-2 opacity-0 cursor-pointer"
+        className="absolute w-full h-2 opacity-0 cursor-pointer z-20"
       />
 
       {/* Max Thumb */}
@@ -60,19 +62,19 @@ const RangeSlider = ({
         step={step}
         value={localValues.max}
         onChange={handleMaxChange}
-        className="absolute w-full h-2 opacity-0 cursor-pointer"
+        className="absolute w-full h-2 opacity-0 cursor-pointer z-20"
       />
 
-      {/* Min Thumb Visible Circle */}
+      {/* Min Thumb Visible */}
       <div
-        className="absolute w-5 h-5 bg-white border-2 border-purple-500 rounded-full -mt-1.5 -ml-2.5"
-        style={{ left: `${(localValues.min / max) * 100}%`, top: '0' }}
+        className="absolute w-5 h-5 bg-white border-2 border-[#780eca] rounded-full z-30"
+        style={{ left: `calc(${calculatePosition(localValues.min)} - 10px)`, top: '0.25rem' }}
       ></div>
 
-      {/* Max Thumb Visible Circle */}
+      {/* Max Thumb Visible */}
       <div
-        className="absolute w-5 h-5 bg-white border-2 border-purple-500 rounded-full -mt-1.5 -ml-2.5"
-        style={{ left: `${(localValues.max / max) * 100}%`, top: '0' }}
+        className="absolute w-5 h-5 bg-white border-2 border-[#780eca] rounded-full z-30"
+        style={{ left: `calc(${calculatePosition(localValues.max)} - 10px)`, top: '0.25rem' }}
       ></div>
     </div>
   );
