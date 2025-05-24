@@ -42,7 +42,7 @@ const JobService = {
       url += `&cursor=${cursor}`;
     }
 
-    console.log('API URL:', url); // Debug log to check the URL
+    //console.log('API URL:', url); // Debug log to check the URL
     return api.get(url);
   },
 
