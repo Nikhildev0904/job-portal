@@ -19,7 +19,7 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
       const response = await JobService.getAllJobs(
         filters,
         currentCursor,
-        12,
+        8,
         sortBy,
         sortDirection
       );
@@ -47,7 +47,7 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
       const response = await JobService.getAllJobs(
         filters,
         cursor,
-        12,
+        8,
         sortBy,
         sortDirection
       );
@@ -69,22 +69,6 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
     fetchJobs();
   }, [fetchJobs]);
 
-  const handleDelete = async (id) => {
-    if (window.confirm('Are you sure you want to delete this job?')) {
-      try {
-        await JobService.deleteJob(id);
-        setJobs(jobs.filter(job => job.id !== id));
-      } catch (err) {
-        console.error(err);
-        alert('Failed to delete job. Please try again.');
-      }
-    }
-  };
-
-  const handleEdit = (id) => {
-    navigate(`/jobs/edit/${id}`);
-  };
-
   if (error) {
     return <div className="text-center text-red-500 my-4">{error}</div>;
   }
@@ -102,8 +86,6 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
               <JobCard
                 key={job.id}
                 job={job}
-                onDelete={handleDelete}
-                onEdit={handleEdit}
               />
             ))}
           </div>

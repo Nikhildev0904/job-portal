@@ -57,13 +57,13 @@ const Header = () => {
             </nav>
           </div>
 
-          {/* If you also want “Create Jobs” to pop up, wrap it similarly */}
           <Link
             to="/jobs/create"
             onClick={e => handleNavClick(e, '/jobs/create')}
             className="
-              bg-[#780eca]
-              hover:bg-[#650cb3]
+              bg-gradient-to-b
+              from-[#9333ea]
+              to-[#780eca]
               text-white
               px-6
               py-1.5

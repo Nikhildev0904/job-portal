@@ -110,7 +110,6 @@ job-portal/
 │   │   │   ├── layout/         # Layout components (Header, MainLayout)
 │   │   │   ├── ui/             # UI components (Button, Input, Select, RangeSlider)
 │   │   │   └── job/            # Job-related components (JobCard, JobForm, FilterSection)
-│   │   ├── context/            # React context for state management
 │   │   ├── pages/              # Page components (Jobs, CreateJob, EditJob)
 │   │   ├── services/           # API service functions
 │   │   ├── App.jsx             # Main application component
@@ -201,7 +200,6 @@ GET /jobs?jobType=FullTime&location=Bangalore&minSalary=50000&maxSalary=100000&s
       "createdAt": "2025-05-15T10:30:00",
       "updatedAt": "2025-05-15T10:30:00"
     }
-    // More job objects...
   ],
   "nextCursor": "550e8400-e29b-41d4-a716-446655440001",
   "hasMore": true

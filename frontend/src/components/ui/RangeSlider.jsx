@@ -80,40 +80,46 @@ const RangeSlider = ({
   return (
     <div className="relative h-6 mt-2" ref={sliderRef}>
       {/* Track */}
-      <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-1 bg-gray-300 rounded-full"></div>
+      <div className="absolute top-1/2 transform -translate-y-1/2 w-full h-0.5 bg-gray-300 rounded-full"></div>
 
-      {/* Selected Range */}
       <div
-        className="absolute top-1/2 transform -translate-y-1/2 h-1 bg-black rounded-full"
+        className="absolute top-1/2 transform -translate-y-1/2 h-0.5 bg-black rounded-full"
         style={{
           left: calculatePosition(localValues.min),
           width: `calc(${calculatePosition(localValues.max)} - ${calculatePosition(localValues.min)})`,
         }}
       ></div>
 
-      {/* Min Thumb */}
+
       <div
-        className="absolute w-5 h-5 bg-white border-2 border-black rounded-full z-10 cursor-grab active:cursor-grabbing"
+        className="absolute w-4 h-4 bg-black rounded-full z-10 cursor-grab active:cursor-grabbing flex items-center justify-center"
         style={{
           left: `calc(${calculatePosition(localValues.min)} - 10px)`,
-          top: '0.25rem',
+          top: '50%',
+          transform: 'translateY(-50%)',
           touchAction: 'none'
         }}
         onMouseDown={handleMinThumbMouseDown}
         onTouchStart={handleMinThumbMouseDown}
-      ></div>
+      >
 
-      {/* Max Thumb */}
+        <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+      </div>
+
+
       <div
-        className="absolute w-5 h-5 bg-white border-2 border-black rounded-full z-10 cursor-grab active:cursor-grabbing"
+        className="absolute w-4 h-4 bg-black rounded-full z-10 cursor-grab active:cursor-grabbing flex items-center justify-center"
         style={{
           left: `calc(${calculatePosition(localValues.max)} - 10px)`,
-          top: '0.25rem',
+          top: '50%',
+          transform: 'translateY(-50%)',
           touchAction: 'none'
         }}
         onMouseDown={handleMaxThumbMouseDown}
         onTouchStart={handleMaxThumbMouseDown}
-      ></div>
+      >
+        <div className="w-1.5 h-1.5 bg-white rounded-full"></div>
+      </div>
     </div>
   );
 };
