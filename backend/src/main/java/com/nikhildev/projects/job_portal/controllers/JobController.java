@@ -3,15 +3,13 @@ package com.nikhildev.projects.job_portal.controllers;
 import com.nikhildev.projects.job_portal.dto.JobRequest;
 import com.nikhildev.projects.job_portal.dto.JobResponse;
 import com.nikhildev.projects.job_portal.services.JobService;
-import lombok.RequiredArgsConstructor;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.validation.Valid;
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Map;
 import java.util.UUID;
 
@@ -31,8 +29,8 @@ public class JobController {
             @RequestParam(required = false) String title,
             @RequestParam(required = false) String location,
             @RequestParam(required = false) String jobType,
-            @RequestParam(required = false) BigDecimal minSalary,
-            @RequestParam(required = false) BigDecimal maxSalary,
+            @RequestParam(required = false) BigInteger minSalary,
+            @RequestParam(required = false) BigInteger maxSalary,
             @RequestParam(required = false) String cursor,
             @RequestParam(defaultValue = "12") int limit,
             @RequestParam(defaultValue = "createdAt") String sortBy,

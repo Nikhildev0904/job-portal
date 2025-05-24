@@ -7,66 +7,78 @@ const FilterSection = ({ onFilterChange }) => {
     title: '',
     location: '',
     jobType: '',
-    salary: { min: 0, max: 2000000 },
+    salary: { min: 0, max: 166666 }, // Monthly values
   });
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     const updated = { ...filters, [name]: value };
     setFilters(updated);
-    onFilterChange(updated);
+
+    // Convert salary to yearly for backend, keep others as is
+    const backendFilters = {
+      ...updated,
+      salary: {
+        min: updated.salary.min * 12,
+        max: updated.salary.max * 12
+      }
+    };
+    onFilterChange(backendFilters);
   };
 
-  const handleSliderChange = (salary) => {
-    const updated = { ...filters, salary };
+  const handleSliderChange = (monthlySalary) => {
+    const updated = { ...filters, salary: monthlySalary };
     setFilters(updated);
-    onFilterChange(updated);
+
+    // Convert to yearly for backend
+    const backendFilters = {
+      ...updated,
+      salary: {
+        min: monthlySalary.min * 12,
+        max: monthlySalary.max * 12
+      }
+    };
+    onFilterChange(backendFilters);
   };
 
   const resetFilters = () => {
-    const reset = { title: '', location: '', jobType: '', salary: { min: 0, max: 2000000 } };
-    setFilters(reset);
-    onFilterChange(reset);
-  };
-
-  // Helper function to parse salary text
-  const parseSalaryText = (salaryText) => {
-    if (!salaryText || salaryText.trim() === '') return { min: 0, max: 0 };
-
-    const cleaned = salaryText.toString().trim();
-
-    if (cleaned.includes('-')) {
-      // Handle range like "8-10"
-      const [minStr, maxStr] = cleaned.split('-').map(s => s.trim());
-      const min = parseFloat(minStr) * 100000; // Convert LPA to actual amount
-      const max = parseFloat(maxStr) * 100000;
-      return { min: min || 0, max: max || 0 };
-    } else {
-      // Handle single value like "8"
-      const amount = parseFloat(cleaned) * 100000; // Convert LPA to actual amount
-      return { min: amount || 0, max: amount || 0 };
-    }
-  };
-
-  // Convert yearly to monthly for display
-  const getMonthlyRange = () => {
-    return {
-      min: Math.round(filters.salary.min / 12),
-      max: Math.round(filters.salary.max / 12)
+    const resetState = {
+      title: '',
+      location: '',
+      jobType: '',
+      salary: { min: 0, max: 166666 } // Monthly
     };
+    setFilters(resetState);
+
+    // Send yearly values to backend
+    onFilterChange({
+      title: '',
+      location: '',
+      jobType: '',
+      salary: { min: 0, max: 2000000 } // Yearly
+    });
+  };
+
+  const formatSalaryDisplay = () => {
+    const minK = Math.round(filters.salary.min / 1000);
+    const maxK = Math.round(filters.salary.max / 1000);
+
+    if (filters.salary.max >= 166666) {
+      return `₹${minK}k - ₹${maxK}k+`;
+    }
+    return `₹${minK}k - ₹${maxK}k`;
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow px-6 py-4 -mt-4 mb-4">
+    <div className="w-full bg-white rounded-lg shadow px-6 py-4 -mt-4 mb-6">
       <div className="flex items-center divide-x divide-gray-200">
 
-        {/* Job Title / Company Name */}
         <div className="flex-1 flex items-center px-4">
-                  <div className="relative w-full">
-                    <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
-             <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                             <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
-                  </svg>
+          <div className="relative w-full">
+            <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+              <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+              </svg>
             </div>
             <input
               type="text"
@@ -79,7 +91,6 @@ const FilterSection = ({ onFilterChange }) => {
           </div>
         </div>
 
-        {/* Location - Changed to text input */}
         <div className="flex-1 flex items-center px-4">
           <div className="relative w-full">
             <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
@@ -97,20 +108,19 @@ const FilterSection = ({ onFilterChange }) => {
               className="w-full pl-8 pr-2 py-2 border-0 focus:ring-0 text-gray-700"
             />
             <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                          </svg>
+              <svg className="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+              </svg>
             </span>
           </div>
         </div>
 
-        {/* Job Type */}
         <div className="flex-1 flex items-center px-4">
           <div className="relative w-full">
             <div className="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
               <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                          </svg>
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+              </svg>
             </div>
             <select
               name="jobType"
@@ -132,24 +142,20 @@ const FilterSection = ({ onFilterChange }) => {
           </div>
         </div>
 
-        {/* Salary Slider */}
         <div className="flex-[1.5] flex-col px-4">
           <div className="flex justify-between text-sm text-gray-700 mb-1">
             <span>Salary Per Month</span>
-            <span>
-              ₹{Math.round(getMonthlyRange().min / 1000)}k - ₹{Math.round(getMonthlyRange().max / 1000)}k
-            </span>
+            <span>{formatSalaryDisplay()}</span>
           </div>
           <RangeSlider
             min={0}
-            max={2000000}
-            step={10000}
+            max={166666}
+            step={1000}
             value={filters.salary}
             onChange={handleSliderChange}
           />
         </div>
 
-        {/* Reset Icon */}
         <div className="flex items-center pl-4">
           <button onClick={resetFilters} className="p-2 hover:bg-gray-100 rounded-full">
             <ResetIcon className="h-5 w-5 text-gray-500 hover:text-gray-700" />

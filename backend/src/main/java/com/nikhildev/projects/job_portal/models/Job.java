@@ -1,14 +1,16 @@
 package com.nikhildev.projects.job_portal.models;
 
 import jakarta.persistence.*;
-import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.UuidGenerator;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -40,8 +42,8 @@ public class Job {
     @Column(nullable = false)
     private JobType jobType;
 
-    private BigDecimal minSalary;
-    private BigDecimal maxSalary;
+    private BigInteger minSalary;
+    private BigInteger maxSalary;
 
     @Column(columnDefinition = "TEXT")
     private String description;
@@ -54,9 +56,8 @@ public class Job {
 
     private LocalDate applicationDeadline;
 
-    private Boolean isRemote;
-
-    private Integer experienceYears;
+    @Column(columnDefinition = "TEXT")
+    private String experienceYears = "0";
 
     @CreatedDate
     @Column(nullable = false, updatable = false)

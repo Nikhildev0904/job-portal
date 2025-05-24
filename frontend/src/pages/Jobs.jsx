@@ -14,14 +14,12 @@ const Jobs = () => {
 
   return (
     <MainLayout>
-
         <FilterSection onFilterChange={handleFilterChange} />
         <JobList
           filters={filters}
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
     </MainLayout>
   );
 };

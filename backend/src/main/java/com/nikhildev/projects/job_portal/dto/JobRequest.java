@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 
 @Data
@@ -29,10 +29,10 @@ public class JobRequest {
     private String jobType;
 
     @Min(value = 0, message = "Minimum salary cannot be negative")
-    private BigDecimal minSalary;
+    private BigInteger minSalary;
 
     @Min(value = 0, message = "Maximum salary cannot be negative")
-    private BigDecimal maxSalary;
+    private BigInteger maxSalary;
 
     @NotBlank(message = "Description is required")
     private String description;
@@ -43,8 +43,5 @@ public class JobRequest {
 
     private LocalDate applicationDeadline;
 
-    private Boolean isRemote;
-
-    @Min(value = 0, message = "Experience years cannot be negative")
-    private Integer experienceYears;
+    private String experienceYears;
 }

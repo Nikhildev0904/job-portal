@@ -78,14 +78,11 @@ const JobCard = ({ job, onDelete, onEdit }) => {
     // Try with hyphens (reliance-industries.com)
     let withHyphens = processedName.replace(/\s+/g, "-").replace(/[^\w\s-]/gi, "").toLowerCase();
     domains.push(`${withHyphens}.com`);
-
-    // Try with first word only (reliance.com) if there are multiple words
     if (processedName.includes(' ')) {
       let firstWord = processedName.split(' ')[0].toLowerCase();
       domains.push(`${firstWord}.com`);
     }
 
-    // Return the first option as default, but we'll try them all
     return domains[0];
   };
 
@@ -136,9 +133,9 @@ const JobCard = ({ job, onDelete, onEdit }) => {
      // Fallback to initial letter
      const letter = job.companyName.charAt(0).toUpperCase();
      return (
-       <div className="w-20 h-20 flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100">
-         <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
-           <span className="text-gray-700 text-2xl font-bold">{letter}</span>
+       <div className="w-16 h-16 flex items-center justify-center bg-white rounded-xl shadow-md border border-gray-100">
+         <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+           <span className="text-gray-700 text-xl font-bold">{letter}</span>
          </div>
        </div>
      );
@@ -148,8 +145,8 @@ const JobCard = ({ job, onDelete, onEdit }) => {
    const companyDomain = getDomainFromCompanyName(job.companyName);
 
    return (
-     <div className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-white via-gray-25 to-gray-100 rounded-xl shadow-sm border border-gray-100">
-       <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-white">
+    <div className="w-20 h-20 flex items-center justify-center bg-gradient-to-br from-white via-gray-25 to-gray-100 rounded-xl shadow-sm border border-gray-100">
+      <div className="w-14 h-14 rounded-full overflow-hidden flex items-center justify-center bg-white">
          <img
            src={`https://logo.clearbit.com/${companyDomain}`}
            alt={`${job.companyName} logo`}
@@ -174,20 +171,20 @@ const JobCard = ({ job, onDelete, onEdit }) => {
     );
   };
 
-  // Format salary display
-//   const formatSalary = () => {
-//     if (!job.minSalary) return '';
-//
-//     // Format to LPA (Lakhs Per Annum)
-//     const minLPA = (job.minSalary / 100000).toFixed(1);
-//
-//     if (job.maxSalary) {
-//       const maxLPA = (job.maxSalary / 100000).toFixed(1);
-//       return `${minLPA} - ${maxLPA} LPA`;
-//     } else {
-//       return `${minLPA} LPA`;
-//     }
-//   };
+  //Format salary display
+  const formatSalary = () => {
+    if (!job.minSalary) return '';
+
+    // Format to LPA (Lakhs Per Annum)
+    const minLPA = (job.minSalary / 100000).toFixed(job.minSalary % 100000 === 0 ? 0 : 1);
+
+    if (job.maxSalary) {
+      const maxLPA = (job.maxSalary / 100000).toFixed(job.maxSalary % 100000 === 0 ? 0 : 1);
+      return `${minLPA} - ${maxLPA} LPA`;
+    } else {
+      return `${minLPA} LPA`;
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm p-4 hover:shadow-md transition-shadow">
@@ -206,36 +203,53 @@ const JobCard = ({ job, onDelete, onEdit }) => {
 
         <div className="flex items-center space-x-2.5 mb-3 text-gray-600 text-sm">
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
-            <span>{job.experienceYears || 1}yr Exp</span>
+            <span>{job.experienceYears || 0} yr Exp</span>
           </div>
 
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
             </svg>
-            <span>{job.isRemote ? 'Remote' : 'Onsite'}</span>
+            <span>{job.location === 'Remote' ? 'Remote' : 'Onsite'}</span>
           </div>
 
           <div className="flex items-center">
-            <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-4 h-4 mr-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
-            <span>{job.salary}</span>
+            <span>{formatSalary()}</span>
           </div>
         </div>
 
       <div className="w-full px-1 md:px-3 mb-4 flex-grow">
-              <ul className="text-sm list-disc list-inside h-24 overflow-hidden space-y-1" style={{color: '#555555'}}>
-                {job.description
-                  ? job.description.split('\n').slice(0, 3).map((line, index) => (
-                      <li key={index} className="leading-relaxed">{line.trim()}</li>
-                    ))
-                  : <li>No details available</li>}
-              </ul>
-            </div>
+        <ul className="text-sm list-disc list-inside h-24 overflow-hidden space-y-1" style={{color: '#555555'}}>
+          {job.description
+            ? (() => {
+
+                const meaningfulLines = job.description.split('\n')
+                  .map(line => line.trim())
+                  .filter(line => line.length > 0);
+
+                const linesToShow = meaningfulLines.slice(0, 3);
+                const hasMoreContent = meaningfulLines.length > 3;
+
+                return (
+                  <>
+                    {linesToShow.map((line, index) => (
+                      <li key={index} className="leading-relaxed">{line}</li>
+                    ))}
+                    {hasMoreContent && (
+                      <li className="leading-relaxed text-gray-400">...</li>
+                    )}
+                  </>
+                );
+              })()
+            : <li>No details available</li>}
+        </ul>
+      </div>
 
 <button
   className="w-full text-white py-3 rounded-lg font-medium transition-colors hover:opacity-90"

@@ -12,8 +12,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import jakarta.persistence.criteria.Predicate;
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,7 +24,7 @@ public class JobService {
     private final JobRepository jobRepository;
 
     public Map<String, Object> getAllJobs(String title, String location, String jobType,
-                                          BigDecimal minSalary, BigDecimal maxSalary,
+                                          BigInteger minSalary, BigInteger maxSalary,
                                           String cursor, int limit,
                                           String sortBy, String sortDirection) {
         // Create specification for filtering
@@ -60,14 +59,23 @@ public class JobService {
                 }
             }
 
-            if (minSalary != null) {
+            if (minSalary != null && maxSalary != null) {
+                predicates.add(criteriaBuilder.and(
+                        criteriaBuilder.lessThanOrEqualTo(root.get("minSalary"), maxSalary),
+                        criteriaBuilder.greaterThanOrEqualTo(
+                                criteriaBuilder.coalesce(root.get("maxSalary"), root.get("minSalary")),
+                                minSalary
+                        )
+                ));
+            } else if (minSalary != null) {
+                // If only min is set, show jobs where maxSalary >= userMin
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(
-                        root.get("minSalary"), minSalary));
-            }
-
-            if (maxSalary != null) {
-                predicates.add(criteriaBuilder.lessThanOrEqualTo(
-                        root.get("maxSalary"), maxSalary));
+                        criteriaBuilder.coalesce(root.get("maxSalary"), root.get("minSalary")),
+                        minSalary
+                ));
+            } else if (maxSalary != null) {
+                // If only max is set, show jobs where minSalary <= userMax
+                predicates.add(criteriaBuilder.lessThanOrEqualTo(root.get("minSalary"), maxSalary));
             }
 
             // Cursor-based pagination
@@ -84,7 +92,7 @@ public class JobService {
                                     criteriaBuilder.greaterThan(root.get("minSalary"), cursorJob.getMinSalary()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("minSalary"), cursorJob.getMinSalary()),
-                                            criteriaBuilder.greaterThan(root.get("id"), cursorJob.getId())                                    )
+                                            criteriaBuilder.greaterThan(root.get("id"), cursorJob.getId()))
                             ));
                         } else {
                             predicates.add(criteriaBuilder.or(
@@ -101,7 +109,7 @@ public class JobService {
                                     criteriaBuilder.greaterThan(root.get("experienceYears"), cursorJob.getExperienceYears()),
                                     criteriaBuilder.and(
                                             criteriaBuilder.equal(root.get("experienceYears"), cursorJob.getExperienceYears()),
-                                            criteriaBuilder.greaterThan(root.get("id"), cursorJob.getId())                                    )
+                                            criteriaBuilder.greaterThan(root.get("id"), cursorJob.getId()))
                             ));
                         } else {
                             predicates.add(criteriaBuilder.or(
@@ -194,7 +202,6 @@ public class JobService {
                 .requirements(jobRequest.getRequirements())
                 .responsibilities(jobRequest.getResponsibilities())
                 .applicationDeadline(jobRequest.getApplicationDeadline())
-                .isRemote(jobRequest.getIsRemote())
                 .experienceYears(jobRequest.getExperienceYears())
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
@@ -218,7 +225,6 @@ public class JobService {
         job.setRequirements(jobRequest.getRequirements());
         job.setResponsibilities(jobRequest.getResponsibilities());
         job.setApplicationDeadline(jobRequest.getApplicationDeadline());
-        job.setIsRemote(jobRequest.getIsRemote());
         job.setExperienceYears(jobRequest.getExperienceYears());
         job.setUpdatedAt(LocalDateTime.now());
 
@@ -246,7 +252,6 @@ public class JobService {
                 .requirements(job.getRequirements())
                 .responsibilities(job.getResponsibilities())
                 .applicationDeadline(job.getApplicationDeadline())
-                .isRemote(job.getIsRemote())
                 .experienceYears(job.getExperienceYears())
                 .createdAt(job.getCreatedAt())
                 .updatedAt(job.getUpdatedAt())

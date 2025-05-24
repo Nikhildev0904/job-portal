@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const API_URL = 'https://jobadminportal-b2ee96473d89.herokuapp.com';
-
+//const API_URL = 'http://localhost:5000';
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -15,22 +15,34 @@ const JobService = {
 
     let url = `/jobs?limit=${limit}&sortBy=${sortBy}&sortDirection=${sortDirection}`;
 
-    // Title search (now includes company name)
-    if (title) url += `&title=${encodeURIComponent(title)}`;
+    // Add filters only if they have meaningful values
+    if (title && title.trim()) {
+      url += `&title=${encodeURIComponent(title.trim())}`;
+    }
 
-    // Location search
-    if (location) url += `&location=${encodeURIComponent(location)}`;
+    if (location && location.trim()) {
+      url += `&location=${encodeURIComponent(location.trim())}`;
+    }
 
-    // Job type filter
-    if (jobType) url += `&jobType=${encodeURIComponent(jobType)}`;
+    if (jobType && jobType.trim()) {
+      url += `&jobType=${encodeURIComponent(jobType)}`;
+    }
 
-    // Salary range filter
-    if (salary && salary.min > 0) url += `&minSalary=${salary.min}`;
-    if (salary && salary.max < 2000000) url += `&maxSalary=${salary.max}`;
 
-    // Cursor for pagination
-    if (cursor) url += `&cursor=${cursor}`;
+    if (salary) {
+      if (salary.min > 0) {
+        url += `&minSalary=${salary.min}`;
+      }
+      if (salary.max < 2000000) {
+        url += `&maxSalary=${salary.max}`;
+      }
+    }
 
+    if (cursor) {
+      url += `&cursor=${cursor}`;
+    }
+
+    console.log('API URL:', url); // Debug log to check the URL
     return api.get(url);
   },
 

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,14 +21,13 @@ public class JobResponse {
     private String companyName;
     private String location;
     private String jobType;
-    private BigDecimal minSalary;
-    private BigDecimal maxSalary;
+    private BigInteger minSalary;
+    private BigInteger maxSalary;
     private String description;
     private String requirements;
     private String responsibilities;
     private LocalDate applicationDeadline;
-    private Boolean isRemote;
-    private Integer experienceYears;
+    private String experienceYears;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }
