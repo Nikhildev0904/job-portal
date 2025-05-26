@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import logo from '../../assets/images/logo.png';
 import JobService from '../../services/job.service';
 
-const Header = () => {
+const Header = ({ onJobCreated }) => {
   const [showModal, setShowModal] = useState(false);
   const [showCreateJobModal, setShowCreateJobModal] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -170,9 +170,12 @@ const Header = () => {
         requirements: '',
         responsibilities: '',
         applicationDeadline: '',
-        experienceYears: '0',
+        experienceYears: '',
       });
       setErrors({});
+       if (onJobCreated) {
+          onJobCreated();
+       }
       alert('Job created successfully!');
     } catch (error) {
       console.error('Error creating job:', error);

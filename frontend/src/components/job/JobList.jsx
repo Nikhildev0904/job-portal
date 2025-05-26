@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
+//import { useNavigate } from 'react-router-dom';
 import JobCard from './JobCard';
 import JobService from '../../services/job.service';
 
-const JobList = ({ filters, sortBy, sortDirection }) => {
-  const navigate = useNavigate();
+const JobList = ({ filters, sortBy, sortDirection, refreshTrigger}) => {
+  //const navigate = useNavigate();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -68,6 +68,12 @@ const JobList = ({ filters, sortBy, sortDirection }) => {
   useEffect(() => {
     fetchJobs();
   }, [fetchJobs]);
+
+  useEffect(() => {
+    if (refreshTrigger > 0) {
+      fetchJobs(true);
+    }
+  }, [refreshTrigger, fetchJobs]);
 
   if (error) {
     return <div className="text-center text-red-500 my-4">{error}</div>;
