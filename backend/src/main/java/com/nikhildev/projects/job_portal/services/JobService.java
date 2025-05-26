@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -203,8 +204,8 @@ public class JobService {
                 .responsibilities(jobRequest.getResponsibilities())
                 .applicationDeadline(jobRequest.getApplicationDeadline())
                 .experienceYears(jobRequest.getExperienceYears())
-                .createdAt(LocalDateTime.now())
-                .updatedAt(LocalDateTime.now())
+                .createdAt(LocalDateTime.now(ZoneId.of("Asia/Kolkata")))
+                .updatedAt(LocalDateTime.now(ZoneId.of("Asia/Kolkata")))
                 .build();
 
         Job savedJob = jobRepository.save(job);
@@ -226,7 +227,7 @@ public class JobService {
         job.setResponsibilities(jobRequest.getResponsibilities());
         job.setApplicationDeadline(jobRequest.getApplicationDeadline());
         job.setExperienceYears(jobRequest.getExperienceYears());
-        job.setUpdatedAt(LocalDateTime.now());
+        job.setUpdatedAt(LocalDateTime.now(ZoneId.of("Asia/Kolkata")));
 
         Job updatedJob = jobRepository.save(job);
         return mapToJobResponse(updatedJob);
